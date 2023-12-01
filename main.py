@@ -1,10 +1,12 @@
+from kivy.config import Config
 from kivymd.app import MDApp
-from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
 from kivy.lang import Builder
-from kivymd.uix.stacklayout import MDStackLayout
-from kivymd.uix.card import MDCardSwipe
+from kivy.core.window import Window
+# from kivymd.uix.stacklayout import MDStackLayout
+# from kivymd.uix.card import MDCardSwipe
 
 import os
 from peewee import  SqliteDatabase, Model, CompositeKey, TimestampField, CharField, TextField
@@ -75,21 +77,31 @@ class DbAdm:
         print(r)
 
 # Clases Kivy ###############################################################
+user = ""
 class ScreenAdm(ScreenManager):
-    pass
+    name_str = StringProperty()
+    def ver_nomb(self):
+        global user
+        print("nombre:")
+        print(self.name_str)
+        user = (self.name_str)
 
-class SwipeToDeleteItem(MDCardSwipe):
-    '''Card with `swipe-to-delete` behavior.'''
-
-    text = StringProperty()
 
 class Note(MDCard):
     text = StringProperty()
 
+class Log(Screen):
+    pass
+
+class NoteList(Screen):
+    pass
 
 class MainApp(MDApp):
     conn = DbAdm()
+    
     def build(self):
+        Window.size = (950,500)
+        Config.set('graphics','resizable', False) # NO FUNCIONA!
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Red"
 
@@ -98,6 +110,9 @@ class MainApp(MDApp):
     def remove_item(self, instance):
         self.root.ids.md_list.remove_widget(instance)
     
+    def pr(self):
+        self.conn.alta(user, "tit","not")
+
     def on_start(self):
         '''Cargar todas las notas.'''
 
@@ -107,20 +122,6 @@ class MainApp(MDApp):
                 Note(text=f"{it.title} | Por: {it.user}, \
 {it.timestamp}\n {note_form}")
             )
-
-    # def on_start(self):
-
-    #     for i in range(10):
-    #         self.root.ids.box.add_widget(
-    #             Note(
-    #                 line_color=(0.2, 0.2, 0.2, 0.8),
-    #                 style="elevated",
-    #                 text=str(i),
-    #                 md_bg_color="#f6eeee",
-    #                 shadow_softness=2,
-    #                 shadow_offset=(0, 1),
-    #             )
-    #         )
 
 
 if __name__ == "__main__":
