@@ -3,10 +3,12 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
 from kivy.lang import Builder
-
+from kivymd.uix.stacklayout import MDStackLayout
+from kivymd.uix.card import MDCardSwipe
 import os
 from peewee import  SqliteDatabase, Model, CompositeKey, TimestampField, CharField, TextField
 from datetime import datetime as dt
+import time
 
 # Cargar Vista
 Builder.load_file("vista.kv")
@@ -17,14 +19,13 @@ DB_P = "user_notes.db"
 db = SqliteDatabase(DB_P)
 
 class NotesDb(Model):
-    timestamp = TimestampField(null= False)
-    user = CharField(null = False)
-    title = CharField(null = False)
-    note = TextField(null = True)
+    timestamp = TimestampField(primary_key=True)
+    user = CharField()
+    title = CharField()
+    note = TextField()
     class Meta():
         database= db
         db_table='notes'
-        primary_key= CompositeKey("timestamp", "title")
 
 try:
     db.connect()
@@ -39,7 +40,8 @@ class DbAdm:
         self.tb = NotesDb
 
     def alta(self, user:str, title:str, note:str):
-
+        
+        time.sleep(1)
         # ALTA en SQLite
         try:
             self.tb.create(
@@ -48,7 +50,7 @@ class DbAdm:
                 title = title,
                 note = note
             )
-            print("Guardada nota")
+            print(f"Guardada nota")
         except:
             raise Exception("ERROR al guardar nota")
         
@@ -58,39 +60,65 @@ class DbAdm:
     def updat(self):
         print(NotImplemented)
     
-    def read(self):
-        print(NotImplemented)
+    def read_all_items(self):
+        return self.tb.select()
 
+    def read_all(self):
+        for fila in self.tb.select():
+            print(fila.timestamp,fila.user,fila.title)
+            print(int(round(fila.timestamp.timestamp())))
+
+    def read(self, timestamp:int):
+        r = self.tb.get(self.tb.timestamp==timestamp)
+        print(r)
 
 # Clases Kivy ###############################################################
 class ScreenAdm(ScreenManager):
     pass
 
+class SwipeToDeleteItem(MDCardSwipe):
+    '''Card with `swipe-to-delete` behavior.'''
+
+    text = StringProperty()
+
 class Note(MDCard):
     text = StringProperty()
 
 class MainApp(MDApp):
-
+    conn = DbAdm()
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Red"
 
         return ScreenAdm()
+    
+    def remove_item(self, instance):
+        self.root.ids.md_list.remove_widget(instance)
+    
     def on_start(self):
-        styles = {
-            "elevated": "#f6eeee", "filled": "#f4dedc", "outlined": "#f8f5f4"
-        }
-        for style in styles.keys():
-            self.root.ids.box.add_widget(
-                Note(
-                    line_color=(0.2, 0.2, 0.2, 0.8),
-                    style=style,
-                    text=style.capitalize(),
-                    md_bg_color=styles[style],
-                    shadow_softness=2 if style == "elevated" else 12,
-                    shadow_offset=(0, 1) if style == "elevated" else (0, 2),
-                )
+        '''Creates a list of cards.'''
+
+        for it in self.conn.read_all_items():
+            self.root.ids.md_list.add_widget(
+                SwipeToDeleteItem(text=f"{it.title} | \
+{it.timestamp}\n {it.note}")
             )
+
+    # def on_start(self):
+
+    #     for i in range(10):
+    #         self.root.ids.box.add_widget(
+    #             Note(
+    #                 line_color=(0.2, 0.2, 0.2, 0.8),
+    #                 style="elevated",
+    #                 text=str(i),
+    #                 md_bg_color="#f6eeee",
+    #                 shadow_softness=2,
+    #                 shadow_offset=(0, 1),
+    #             )
+    #         )
+
+
 if __name__ == "__main__":
 
     MainApp().run()

@@ -15,14 +15,20 @@
 
     Screen:
         name: "Notas"
-        MDLabel:
-            text:"Notas"
-            halign:"center"
         MDBoxLayout:
-            id: box
-            adaptive_size: True
-            spacing: "56dp"
-            pos_hint: {"center_x": .5, "center_y": .5}
+            orientation: "vertical"
+
+            MDTopAppBar:
+                elevation: 4
+                title: "MDCardSwipe"
+
+            MDScrollView:
+                scroll_timeout : 100
+
+                MDList:
+                    id: md_list
+                    padding: 0
+                    
         MDRaisedButton:
             text:"Ir a home"
             pos_hint:{"center_x":.5, "center_y":.3}
@@ -46,3 +52,23 @@
             color: "grey"
             pos: "12dp", "12dp"
             bold: True
+
+<SwipeToDeleteItem>
+    size_hint_y: None
+    height: content.height
+
+    MDCardSwipeLayerBox:
+        padding: "8dp"
+
+        MDIconButton:
+            icon: "trash-can"
+            pos_hint: {"center_y": .5}
+            on_release: app.remove_item(root)
+
+    MDCardSwipeFrontBox:
+
+        # Content of card.
+        OneLineListItem:
+            id: content
+            text: root.text
+            _no_ripple_effect: True
