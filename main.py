@@ -5,10 +5,12 @@ from kivymd.uix.card import MDCard
 from kivy.lang import Builder
 from kivymd.uix.stacklayout import MDStackLayout
 from kivymd.uix.card import MDCardSwipe
+
 import os
 from peewee import  SqliteDatabase, Model, CompositeKey, TimestampField, CharField, TextField
 from datetime import datetime as dt
 import time
+import textwrap as tw
 
 # Cargar Vista
 Builder.load_file("vista.kv")
@@ -84,6 +86,7 @@ class SwipeToDeleteItem(MDCardSwipe):
 class Note(MDCard):
     text = StringProperty()
 
+
 class MainApp(MDApp):
     conn = DbAdm()
     def build(self):
@@ -96,12 +99,13 @@ class MainApp(MDApp):
         self.root.ids.md_list.remove_widget(instance)
     
     def on_start(self):
-        '''Creates a list of cards.'''
+        '''Cargar todas las notas.'''
 
         for it in self.conn.read_all_items():
+            note_form = "\n".join(tw.wrap(it.note))
             self.root.ids.md_list.add_widget(
-                SwipeToDeleteItem(text=f"{it.title} | \
-{it.timestamp}\n {it.note}")
+                Note(text=f"{it.title} | Por: {it.user}, \
+{it.timestamp}\n {note_form}")
             )
 
     # def on_start(self):
