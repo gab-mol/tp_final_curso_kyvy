@@ -95,23 +95,18 @@ class ScreenAdm(ScreenManager):
 
 class Note(MDCard):
     text = StringProperty()
-    id_card = StringProperty()
-    def __init__(self, conn:DbAdm, id_card, **kwargs): # esto tiene que ir en cada instancia de card
-        super().__init__(**kwargs) # tengoq que descubrir como meter en menu_items 
-        #print("dentro de class Note:", id_card, type(id_card),"\n",conn)
-        menu_items = [
-            {
-                "text": f"{i[0]}",
-                "viewclass": "OneLineListItem",
-                "on_release": lambda x: i[1](id_card)
-            } for i in [["Borrar", conn.delete], ["Modificar", conn.update]] # meter acá todas las claves de las funciones CRUD
-        ]
-        #print("\n #### IDs:",self.ids,",\n")
-        self.menu = MDDropdownMenu(
-            caller=self.ids.dot_button,
-            items=menu_items,
-            width_mult=4,
-        )
+    # id_card = StringProperty()
+    
+    def __init__(self, conn:DbAdm, id_card, **kwargs):
+        super().__init__(**kwargs)
+        self.id_card = id_card
+        self.conn = conn
+    
+    def _del(self):
+        self.conn.delete(self.id_card)
+    
+    def _upd(self):
+       self.conn.update(self.id_card)
 
 
 class Log(Screen):

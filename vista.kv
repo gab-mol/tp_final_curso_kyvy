@@ -59,12 +59,16 @@
     size: "750dp", "100dp"
 
     MDRelativeLayout:
-
         MDIconButton:
-            id:dot_button
-            icon: "dots-vertical"
+            id:del_button
+            icon: "trash-can"
+            pos_hint: {"top": 1, "right": .9}
+            on_release: root._del()
+        MDIconButton:
+            id:upd_button
+            icon: "pencil"
             pos_hint: {"top": 1, "right": 1}
-            on_release: root.menu.open()
+            on_release: root._upd()
 
         MDLabel:
             id: label
