@@ -77,23 +77,3 @@
             color: "grey"
             pos: "12dp", "12dp"
             bold: True
-
-<SwipeToDeleteItem>
-    size_hint_y: None
-    height: content.height
-
-    MDCardSwipeLayerBox:
-        padding: "8dp"
-
-        MDIconButton:
-            icon: "trash-can"
-            pos_hint: {"center_y": .5}
-            on_release: app.remove_item(root)
-
-    MDCardSwipeFrontBox:
-
-        # Content of card.
-        OneLineListItem:
-            id: content
-            text: root.text
-            _no_ripple_effect: True

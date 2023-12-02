@@ -1,13 +1,13 @@
 from kivy.config import Config
-from kivy.metrics import dp
+# from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
 from kivy.lang import Builder
 from kivy.core.window import Window
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
+# from kivymd.uix.menu import MDDropdownMenu
+# from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 
 import os
 from peewee import  SqliteDatabase, Model, CompositeKey, TimestampField, CharField, TextField
@@ -61,7 +61,6 @@ class DbAdm:
             raise Exception("ERROR al guardar nota")
         
     def delete(self,time_id):
-        #self.tb.delete().where()
         print("borrar esto:",time_id)
 
     def update(self,time_id):
@@ -80,8 +79,6 @@ class DbAdm:
         print(r)
 
 
-conn = DbAdm()
-
 # Clases Kivy ###############################################################
 user = ""
 class ScreenAdm(ScreenManager):
@@ -95,7 +92,6 @@ class ScreenAdm(ScreenManager):
 
 class Note(MDCard):
     text = StringProperty()
-    # id_card = StringProperty()
     
     def __init__(self, conn:DbAdm, id_card, **kwargs):
         super().__init__(**kwargs)
@@ -109,28 +105,15 @@ class Note(MDCard):
        self.conn.update(self.id_card)
 
 
-class Log(Screen):
-    pass
+class Log(Screen): pass
 
 
-class NoteList(Screen):
-    pass
-#     def __init__(self, **kw):
-#         super().__init__(**kw)
-#         global conn
-#         for it in conn.read_all_items():
-#             note_form = "\n".join(tw.wrap(it.note))
-#             self.app.ids.md_list.add_widget(
-#                 Note(
-#                     id_card= it.timestamp,
-#                     text=f"{it.title} | Por: {it.user}, \
-# {it.timestamp}\n {note_form}", 
-#                     conn=conn
-#                 )
-#             )
+class NoteList(Screen): pass
 
 
 class MainApp(MDApp):
+    
+    conn = DbAdm()
     
     def build(self):
         Window.size = (950,500)
@@ -146,15 +129,14 @@ class MainApp(MDApp):
     def on_start(self):
         '''Cargar todas las notas.'''
         
-        global conn
-        for it in conn.read_all_items():
+        for it in self.conn.read_all_items():
             note_form = "\n".join(tw.wrap(it.note))
             self.root.ids.md_list.add_widget(
                 Note(
                     id_card= it.timestamp,
                     text=f"{it.title} | Por: {it.user}, \
 {it.timestamp}\n {note_form}", 
-                    conn=conn
+                    conn=self.conn
                 )
             )
 
