@@ -1,25 +1,39 @@
 <ScreenAdm>
     name_str: name_field.text
+    titl_note: titl_field.text
+    text_note: tex_field.text
     Log:
         name: "Logging"
-        MDLabel:
-            pos_hint:{"center_x":.5, "center_y":.8}
-            text:"Ingrese su nombre"
-            halign:"center"
-        MDTextField:
-            id: name_field
-            pos_hint:{"center_x":.5, "center_y":.7}
-            halign:"center"
-        MDRaisedButton:
-            text: "imprimir"
-            pos_hint:{"center_x":.3, "center_y":.15}
-            on_release: 
-                root.ver_nomb()
-                app.pr()
-        MDRaisedButton:
-            text:"Empezar a escribir"
-            pos_hint:{"center_x":.5, "center_y":.2}
-            on_release:root.current="Notas"
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing:20
+            padding:50
+            MDLabel:
+                font_size:50
+                text:"[b]Ingrese su nombre[/b]"
+                markup:True
+                halign:"center"
+                size_hint: 1, .25
+            MDTextField:
+                id: name_field
+                mode:"rectangle"
+                size_hint:.5, .20
+                pos_hint:{'center_x':.5,'center_y':.5}
+                font_size:25
+                halign:"center"
+            MDRaisedButton:
+                text: "Escribir nueva nota"
+                font_size: 25
+                pos_hint:{"center_x":.5, "center_y":.5}
+                size_hint:.5, .275
+                on_release: 
+                    root.current= "write"
+            MDRaisedButton:
+                text:"Ver notas guardadas"
+                font_size: 25
+                size_hint:.5, .275
+                pos_hint:{"center_x":.5, "center_y":.5}
+                on_release:root.current="Notas"
 
     NoteList:
         name: "Notas"
@@ -45,13 +59,31 @@
             text:"Escribir nota."
             pos_hint:{"center_x":.9, "center_y":.7}
             on_release:root.current="Logging"
-    Screen:
-        name: "Escribir nueva nota"
-        MDBoxLayout:
 
+    WritNote:
+        name: "write"
+        MDBoxLayout:
+            padding: 50
+            orientation: 'vertical'
+            MDBoxLayout:
+                MDLabel:
+
+                    pos_hint:{"center_x":1, "center_y":.1}
+                    text:"Escriba su nota:"
             MDTextField:
+                id: titl_field
+                size_hint: 1, 1
+                multiline: False
+                hint_text: "Título..."
+            MDTextField:
+                id: tex_field
+                size_hint: 1, 1
                 multiline: True
-                hint_text: "Multi-line text"
+                hint_text: "Escriba su nota...."
+            MDRaisedButton:
+                id:save_button
+                size_hint: 1, 0.5
+                on_release:root.save_note()
 
 <Note>
     padding: 4

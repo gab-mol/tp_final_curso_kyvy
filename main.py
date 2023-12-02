@@ -10,13 +10,12 @@ from kivy.core.window import Window
 # from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 
 import os
-from peewee import  SqliteDatabase, Model, CompositeKey, TimestampField, CharField, TextField
+from peewee import  SqliteDatabase, Model, TimestampField, CharField, TextField
 from datetime import datetime as dt
 import time
 import textwrap as tw
 
 # Cargar Vista
-    # Cargar Vista
 Builder.load_file("vista.kv")
 
 # Base de datos (SQLite, ORM: peewee) ######################################
@@ -81,14 +80,25 @@ class DbAdm:
 
 # Clases Kivy ###############################################################
 user = ""
+
+
 class ScreenAdm(ScreenManager):
     name_str = StringProperty()
+    titl_note = StringProperty()
+    text_note = StringProperty()
+    
+    def __init__(self, conn:DbAdm, **kwargs):
+        super().__init__(**kwargs)
+        self.conn= conn
+        
     def ver_nomb(self):
         global user
         print("nombre:")
         print(self.name_str)
         user = (self.name_str)
 
+    def save_note(self):
+        print("guardar",self.titl_note,self.text_note)
 
 class Note(MDCard):
     text = StringProperty()
@@ -111,8 +121,11 @@ class Log(Screen): pass
 class NoteList(Screen): pass
 
 
+class WritNote(Screen): pass
+
+
 class MainApp(MDApp):
-    
+    title= "App anotador"
     conn = DbAdm()
     
     def build(self):
@@ -121,7 +134,7 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Red"
 
-        return ScreenAdm()
+        return ScreenAdm(self.conn)
     
     def remove_item(self, instance):
         self.root.ids.md_list.remove_widget(instance)
