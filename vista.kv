@@ -38,52 +38,79 @@
     NoteList:
         name: "Notas"
         MDBoxLayout:
-            orientation: "vertical"
+            orientation: 'horizontal'
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint: .8, 1
+                MDTopAppBar:
+                    elevation: 4
+                    title: "Notas:"
 
-            MDTopAppBar:
-                elevation: 4
-                title: "Notas:"
+                MDScrollView:
+                    scroll_timeout : 100
 
-            MDScrollView:
-                scroll_timeout : 100
+                    MDList:
+                        id: md_list
+                        padding: 5
 
-                MDList:
-                    id: md_list
-                    padding: 0
-                    
-        MDRaisedButton:
-            text:"Cambiar de Nombre"
-            pos_hint:{"center_x":.9, "center_y":.8}
-            on_release:root.current="Logging"
-        MDRaisedButton:
-            text:"Escribir nota."
-            pos_hint:{"center_x":.9, "center_y":.7}
-            on_release:root.current="Logging"
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint: .2, 1
+                padding: 30
+                spacing: 15
+                MDRaisedButton:
+                    text:"Inicio"
+                    font_size: 30
+                    size_hint: 1,1
+                    #pos_hint:{"center_x":.5, "center_y":1}
+                    on_release:root.current="Logging"
+                MDRaisedButton:
+                    text:"Nueva"
+                    font_size: 30
+                    size_hint: 1,1
+                    #pos_hint:{"center_x":.5, "center_y":1}
+                    on_release:root.current="write"
 
     WritNote:
         name: "write"
         MDBoxLayout:
-            padding: 50
-            orientation: 'vertical'
+            padding: 40
+            spacing: 15
+            orientation: 'horizontal'
             MDBoxLayout:
-                MDLabel:
-
-                    pos_hint:{"center_x":1, "center_y":.1}
-                    text:"Escriba su nota:"
-            MDTextField:
-                id: titl_field
-                size_hint: 1, 1
-                multiline: False
-                hint_text: "Título..."
-            MDTextField:
-                id: tex_field
-                size_hint: 1, 1
-                multiline: True
-                hint_text: "Escriba su nota...."
-            MDRaisedButton:
-                id:save_button
-                size_hint: 1, 0.5
-                on_release:root.save_note()
+                orientation: 'vertical'
+                MDTextField:
+                    id: titl_field
+                    size_hint: 1, .25
+                    font_size: 30
+                    multiline: False
+                    hint_text: "Título..."
+                MDTextField:
+                    id: tex_field
+                    size_hint: 1, .75
+                    font_size: 20
+                    multiline: True
+                    hint_text: "Escriba su nota...."
+            MDBoxLayout:
+                spacing: 30
+                orientation: 'vertical'
+                MDRaisedButton:
+                    # id: save_button
+                    text: "[b]Guardar[/b]"
+                    markup: True
+                    font_size: 30
+                    size_hint: 1, 0.5
+                    on_release:root.save_note()
+                MDRaisedButton:
+                    text: "Notas Guardadas"
+                    font_size: 30
+                    size_hint: 1, 0.5
+                    on_release:root.current= "Notas"
+                MDRaisedButton:
+                    text: "Inicio"
+                    font_size: 30
+                    size_hint: 1, 0.5
+                    on_release:root.current= "Logging"
 
 <Note>
     padding: 4
