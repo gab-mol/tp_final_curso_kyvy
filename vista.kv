@@ -100,7 +100,10 @@
                     markup: True
                     font_size: 30
                     size_hint: 1, 0.5
-                    on_release:root.save_note()
+                    on_release:
+                        root.save_note()
+                        app.remove_items()
+                        app.on_start()                        
                 MDRaisedButton:
                     text: "Notas Guardadas"
                     font_size: 30
@@ -126,6 +129,7 @@
                 root._del()
                 app.remove_items()
                 app.on_start()
+
         MDIconButton:
             id:upd_button
             icon: "pencil"

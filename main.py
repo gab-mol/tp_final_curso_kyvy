@@ -101,7 +101,13 @@ class ScreenAdm(ScreenManager):
         user = (self.name_str)
 
     def save_note(self):
-        print("guardar",self.titl_note,self.text_note)
+        global user
+        print("guardar",user, self.titl_note,self.text_note)
+        self.conn.alta(
+            user=user,
+            title=self.titl_note,
+            note=self.text_note
+        )
 
 class Note(MDCard):
     text = StringProperty()
