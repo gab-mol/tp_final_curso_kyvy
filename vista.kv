@@ -122,7 +122,10 @@
             id:del_button
             icon: "trash-can"
             pos_hint: {"top": 1, "right": .9}
-            on_release: root._del()
+            on_release: 
+                root._del()
+                app.remove_items()
+                app.on_start()
         MDIconButton:
             id:upd_button
             icon: "pencil"

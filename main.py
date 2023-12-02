@@ -6,8 +6,8 @@ from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
 from kivy.lang import Builder
 from kivy.core.window import Window
-# from kivymd.uix.menu import MDDropdownMenu
-# from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
+from kivymd.utils import asynckivy
+from kivymd.uix.refreshlayout import refreshlayout
 
 import os
 from peewee import  SqliteDatabase, Model, TimestampField, CharField, TextField
@@ -60,8 +60,11 @@ class DbAdm:
             raise Exception("ERROR al guardar nota")
         
     def delete(self,time_id):
-        print("borrar esto:",time_id)
-
+        print("borrar nota del:",time_id)
+        rm=self.tb.get(self.tb.timestamp == time_id)
+        rm.delete_instance()
+        #time.sleep(1)
+        
     def update(self,time_id):
         print("cambiar esto:",time_id)
     
@@ -136,12 +139,12 @@ class MainApp(MDApp):
 
         return ScreenAdm(self.conn)
     
-    def remove_item(self, instance):
-        self.root.ids.md_list.remove_widget(instance)
+    def remove_items(self):
+        self.root.ids.md_list.clear_widgets() 
 
     def on_start(self):
         '''Cargar todas las notas.'''
-        
+        print("\n\nlanzando on_start !!!!!\n\n")
         for it in self.conn.read_all_items():
             note_form = "\n".join(tw.wrap(it.note))
             self.root.ids.md_list.add_widget(
