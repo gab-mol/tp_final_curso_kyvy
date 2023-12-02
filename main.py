@@ -1,12 +1,13 @@
 from kivy.config import Config
+from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
 from kivy.lang import Builder
 from kivy.core.window import Window
-# from kivymd.uix.stacklayout import MDStackLayout
-# from kivymd.uix.card import MDCardSwipe
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 
 import os
 from peewee import  SqliteDatabase, Model, CompositeKey, TimestampField, CharField, TextField
@@ -15,6 +16,7 @@ import time
 import textwrap as tw
 
 # Cargar Vista
+    # Cargar Vista
 Builder.load_file("vista.kv")
 
 # Base de datos (SQLite, ORM: peewee) ######################################
@@ -58,11 +60,12 @@ class DbAdm:
         except:
             raise Exception("ERROR al guardar nota")
         
-    def delet(self):
-        self.tb.delete().where()
+    def delete(self,time_id):
+        #self.tb.delete().where()
+        print("borrar esto:",time_id)
 
-    def updat(self):
-        print(NotImplemented)
+    def update(self,time_id):
+        print("cambiar esto:",time_id)
     
     def read_all_items(self):
         return self.tb.select()
@@ -75,6 +78,9 @@ class DbAdm:
     def read(self, timestamp:int):
         r = self.tb.get(self.tb.timestamp==timestamp)
         print(r)
+
+
+conn = DbAdm()
 
 # Clases Kivy ###############################################################
 user = ""
@@ -89,15 +95,47 @@ class ScreenAdm(ScreenManager):
 
 class Note(MDCard):
     text = StringProperty()
+    id_card = StringProperty()
+    def __init__(self, conn:DbAdm, id_card, **kwargs): # esto tiene que ir en cada instancia de card
+        super().__init__(**kwargs) # tengoq que descubrir como meter en menu_items 
+        #print("dentro de class Note:", id_card, type(id_card),"\n",conn)
+        menu_items = [
+            {
+                "text": f"{i[0]}",
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x: i[1](id_card)
+            } for i in [["Borrar", conn.delete], ["Modificar", conn.update]] # meter acá todas las claves de las funciones CRUD
+        ]
+        #print("\n #### IDs:",self.ids,",\n")
+        self.menu = MDDropdownMenu(
+            caller=self.ids.dot_button,
+            items=menu_items,
+            width_mult=4,
+        )
+
 
 class Log(Screen):
     pass
 
+
 class NoteList(Screen):
     pass
+#     def __init__(self, **kw):
+#         super().__init__(**kw)
+#         global conn
+#         for it in conn.read_all_items():
+#             note_form = "\n".join(tw.wrap(it.note))
+#             self.app.ids.md_list.add_widget(
+#                 Note(
+#                     id_card= it.timestamp,
+#                     text=f"{it.title} | Por: {it.user}, \
+# {it.timestamp}\n {note_form}", 
+#                     conn=conn
+#                 )
+#             )
+
 
 class MainApp(MDApp):
-    conn = DbAdm()
     
     def build(self):
         Window.size = (950,500)
@@ -109,18 +147,20 @@ class MainApp(MDApp):
     
     def remove_item(self, instance):
         self.root.ids.md_list.remove_widget(instance)
-    
-    def pr(self):
-        self.conn.alta(user, "tit","not")
 
     def on_start(self):
         '''Cargar todas las notas.'''
-
-        for it in self.conn.read_all_items():
+        
+        global conn
+        for it in conn.read_all_items():
             note_form = "\n".join(tw.wrap(it.note))
             self.root.ids.md_list.add_widget(
-                Note(text=f"{it.title} | Por: {it.user}, \
-{it.timestamp}\n {note_form}")
+                Note(
+                    id_card= it.timestamp,
+                    text=f"{it.title} | Por: {it.user}, \
+{it.timestamp}\n {note_form}", 
+                    conn=conn
+                )
             )
 
 

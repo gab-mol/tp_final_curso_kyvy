@@ -61,8 +61,10 @@
     MDRelativeLayout:
 
         MDIconButton:
+            id:dot_button
             icon: "dots-vertical"
             pos_hint: {"top": 1, "right": 1}
+            on_release: root.menu.open()
 
         MDLabel:
             id: label
