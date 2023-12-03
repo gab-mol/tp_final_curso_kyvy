@@ -1,4 +1,5 @@
 __pycache__
+.vscode
 pr.py
 pr2.py
 user_notes.db
