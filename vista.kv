@@ -55,6 +55,7 @@
                     MDList:
                         id: md_list
                         padding: 5
+                        spacing:25
 
             MDBoxLayout:
                 orientation: "vertical"
@@ -82,6 +83,7 @@
             orientation: 'horizontal'
             MDBoxLayout:
                 orientation: 'vertical'
+                size_hint: .8, 1
                 MDTextField:
                     id: titl_field
                     size_hint: 1, .25
@@ -97,48 +99,64 @@
             MDBoxLayout:
                 spacing: 30
                 orientation: 'vertical'
+                size_hint: .2, 1
                 MDRaisedButton:
                     # id: save_button
                     text: "[b]Guardar[/b]"
                     markup: True
-                    font_size: 30
-                    size_hint: 1, 0.5
+                    font_size: 35
+                    line_color: "white"
+                    size_hint: 1, 0.3
                     on_release:
                         root.save_note()
                         app.remove_items()
                         app.on_start()                        
                 MDRaisedButton:
-                    text: "Notas Guardadas"
-                    font_size: 30
-                    size_hint: 1, 0.5
+                    text: "Notas \nGuardadas"
+                    font_size: 25
+                    line_color: "white"
+                    size_hint: 1, 0.3
                     on_release:root.current= "Notas"
                 MDRaisedButton:
                     text: "Inicio"
-                    font_size: 30
-                    size_hint: 1, 0.5
+                    font_size: 35
+                    line_color: "white"
+                    size_hint: 1, 0.3
                     on_release:root.current= "Logging"
 
     UpdNote:
         name: "upd_note"
-
+        MDTopAppBar:
+            title: "[size=30sp][b]Actualizar nota del: [/b][i]"+root.upd_id+"[/i][/size]"
+            markup: True
+            elevation: 3
+            pos_hint: {'top': 1}
+        # MDLabel:
+        #     size_hint: 1,.33
+        #     font_size: 40
+        #     text: "Actualizar: "+root.upd_id
+        #     pos_hint: {'center_x': .4,'top': 1}
+        #     halign: 'center'
+        MDIconButton:
+            icon:"home"
+            icon_size: "60dp"
+            pos_hint: {'center_x': .908,'top': 1.02}
+            on_release: 
+                self.grow()
+                app.root.current= "Logging"            
+        MagicButton:
+            text: "[b]Guardar[/b]"
+            font_size: 23
+            pos_hint: {'right': .85,'top': .978}
+            line_color: "white"
+            on_release:
+                self.grow()
+                root.change_note()
+                app.on_start()
         MDBoxLayout:
             orientation: 'vertical'
-            MDBoxLayout:
-                orientation: 'horizontal'
-                MDLabel:
-                    text: "Actualizar nota"
-                    size_hint: .33,1
-                MDLabel:
-                    size_hint: .33,1
-                    text: root.upd_id
-                MDRaisedButton:
-                    text: "Guardar"
-                    font_size: 15
-                    size_hint: .33,1
-                    on_release:
-                        root.change_note()
-                        app.on_start()
-
+            size_hint: 1, .8
+            padding: 5
             MDTextField:
                 id: upd_titl_field
                 size_hint: 1, .25
@@ -190,3 +208,5 @@
             #color: "grey"
             pos: "12dp", "12dp"
             #bold: True
+
+<MagicButton@MagicBehavior+MDRaisedButton>

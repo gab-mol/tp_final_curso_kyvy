@@ -1,5 +1,6 @@
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
 from kivy.config import Config
@@ -95,14 +96,11 @@ class DbAdm:
 # Clases Kivy ###############################################################
 
 class ScreenAdm(ScreenManager):
-   # id_pointer = StringProperty()
-    
-    upd_id = StringProperty()
-    
     name_str = StringProperty()
     titl_note = StringProperty()
     text_note = StringProperty()
     
+    upd_id = StringProperty()
     upd_title = StringProperty()
     upd_note = StringProperty()
     
@@ -167,12 +165,12 @@ class NoteList(Screen): pass
 class WritNote(Screen): pass
 
 
-class UpdNote(Screen): pass
-    # upd_title = StringProperty()
-    # upd_note = StringProperty()
-    # def __init__(self, **kw):
-    #     super().__init__(**kw)
+class UpdNote(Screen):
+    def set_toolbar_font_name(self, *args):
+        self.ids.toolbar.ids.label_title.font_name = "JetBrainsMono-ExtraBold-Italic.ttf"
 
+    def set_toolbar_font_size(self, *args):
+        self.ids.toolbar.ids.label_title.font_size = '50sp'
 
 class MainApp(MDApp):
     title= "App anotador"
