@@ -177,8 +177,8 @@
 
     padding: 4
     size_hint: None, None
-    size: "750dp", "100dp"
-
+    width: app.root.width
+    height: cardlabel.height
     MDRelativeLayout:
         MDIconButton:
             # id:del_button
@@ -201,11 +201,11 @@
 
 
         MDLabel:
-            id: label
+            id: cardlabel
             text: root.text
             markup: True
             adaptive_size: True
-            #color: "grey"
+            height: self.texture_size[1] + 2*self.padding[1]
             pos: "12dp", "12dp"
             #bold: True
 
