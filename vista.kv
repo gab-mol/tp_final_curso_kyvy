@@ -114,15 +114,51 @@
                     font_size: 30
                     size_hint: 1, 0.5
                     on_release:root.current= "Logging"
+    UpdNote:
+        upd_title: titl_field.text
+        upd_note: tex_field.text
 
+        name: "upd_note"
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            MDBoxLayout:
+                orientation: 'horizontal'
+                MDLabel:
+                    text: "Actualizar nota"
+                    size_hint: .33,1
+                MDLabel:
+                    size_hint: .33,1
+                    text: root.id_pointer
+                MDRaisedButton:
+                    text: "Guardar"
+                    font_size: 15
+                    size_hint: .33,1
+                    on_release:root.change_note(titl_field.text,tex_field.text)
+
+            MDTextField:
+                id: titl_field
+                size_hint: 1, .25
+                font_size: 30
+                multiline: False
+                hint_text: "Título..."
+                text: root.titl_note
+            MDTextField:
+                id: tex_field
+                size_hint: 1, .75
+                font_size: 20
+                multiline: True
+                hint_text: "Escriba su nota...."
+                text: root.text_note 
 <Note>
+
     padding: 4
     size_hint: None, None
     size: "750dp", "100dp"
 
     MDRelativeLayout:
         MDIconButton:
-            id:del_button
+            # id:del_button
             icon: "trash-can"
             pos_hint: {"top": 1, "right": .9}
             on_release: 
@@ -131,15 +167,20 @@
                 app.on_start()
 
         MDIconButton:
-            id:upd_button
+            # id:upd_button
             icon: "pencil"
             pos_hint: {"top": 1, "right": 1}
-            on_release: root._upd()
+            on_release:
+                root._upd()
+                app.root.id_pointer = root.id
+                app.root.current="upd_note"
+
 
         MDLabel:
             id: label
             text: root.text
+            markup: True
             adaptive_size: True
-            color: "grey"
+            #color: "grey"
             pos: "12dp", "12dp"
-            bold: True
+            #bold: True
