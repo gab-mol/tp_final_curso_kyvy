@@ -1,19 +1,24 @@
+# Dependencias Kivy
+from kivy.config import Config
+## Configuración de dimensiones de ventana
+Config.set('graphics', 'resizable', '0') 
+Config.set('graphics', 'width', '1000')
+Config.set('graphics', 'height', '500')
+
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
-from kivy.config import Config
 from kivy.lang import Builder
-from kivy.core.window import Window
 
+# Otras dependencias
 import os
 from peewee import SqliteDatabase, Model, TimestampField, CharField, TextField
 from datetime import datetime as dt
 import time as t
 import textwrap as tw
 
-# Cargar Vista
+# Cargar Vista de archivo KV
 Builder.load_file("vista.kv")
 
 # Base de datos (SQLite, ORM: peewee) ######################################
@@ -174,8 +179,8 @@ class MainApp(MDApp):
     conn = DbAdm()
     
     def build(self):
-        Window.size = (950,500)
-        Config.set('graphics','resizable', False) # NO FUNCIONA!
+        #Window.size = (1000,500)
+        #Config.set('graphics','resizable', False) # NO FUNCIONA!
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Red"
 
@@ -191,7 +196,7 @@ class MainApp(MDApp):
         for it in self.conn.read_all_items():
             
             # Formatear párrafo
-            note_form = "\n".join(tw.wrap(it.note))
+            note_form = "\n".join(tw.wrap(it.note,90))
             
             # Creando vista de notas
             self.root.ids.md_list.add_widget(

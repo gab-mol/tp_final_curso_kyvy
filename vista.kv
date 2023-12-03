@@ -170,7 +170,7 @@
 
 <Note>
     # spacing: 10
-    padding: 4
+    # padding: 4
     size_hint: None, None
     width: app.root.width
     height: cardlabel.height+5
@@ -184,6 +184,7 @@
             adaptive_size: True
             pos_hint: {"top": 1}
             height: self.texture_size[1]
+            width: self.width
             pos: "12dp", "12dp"
 
         MDIconButton:
