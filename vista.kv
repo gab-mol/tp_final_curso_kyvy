@@ -66,13 +66,13 @@
                     text:"Inicio"
                     font_size: 30
                     size_hint: 1,1
-                    #pos_hint:{"center_x":.5, "center_y":1}
+                    line_color: "white"
                     on_release:root.current="Logging"
                 MDRaisedButton:
                     text:"Nueva"
                     font_size: 30
                     size_hint: 1,1
-                    #pos_hint:{"center_x":.5, "center_y":1}
+                    line_color: "white"
                     on_release:root.current="write"
 
     WritNote:
@@ -100,7 +100,7 @@
                 spacing: 30
                 orientation: 'vertical'
                 size_hint: .2, 1
-                MDRaisedButton:
+                MagicRisedButton:
                     # id: save_button
                     text: "[b]Guardar[/b]"
                     markup: True
@@ -108,6 +108,7 @@
                     line_color: "white"
                     size_hint: 1, 0.3
                     on_release:
+                        self.grow()
                         root.save_note()
                         app.remove_items()
                         app.on_start()                        
@@ -116,13 +117,13 @@
                     font_size: 25
                     line_color: "white"
                     size_hint: 1, 0.3
-                    on_release:root.current= "Notas"
+                    on_release: root.current= "Notas"
                 MDRaisedButton:
                     text: "Inicio"
                     font_size: 35
                     line_color: "white"
                     size_hint: 1, 0.3
-                    on_release:root.current= "Logging"
+                    on_release: root.current= "Logging"
 
     UpdNote:
         name: "upd_note"
@@ -131,20 +132,12 @@
             markup: True
             elevation: 3
             pos_hint: {'top': 1}
-        # MDLabel:
-        #     size_hint: 1,.33
-        #     font_size: 40
-        #     text: "Actualizar: "+root.upd_id
-        #     pos_hint: {'center_x': .4,'top': 1}
-        #     halign: 'center'
         MDIconButton:
             icon:"home"
             icon_size: "60dp"
             pos_hint: {'center_x': .908,'top': 1.02}
-            on_release: 
-                self.grow()
-                app.root.current= "Logging"            
-        MagicButton:
+            on_release: app.root.current= "Logging"            
+        MagicRisedButton:
             text: "[b]Guardar[/b]"
             font_size: 23
             pos_hint: {'right': .85,'top': .978}
@@ -183,7 +176,7 @@
         MDIconButton:
             # id:del_button
             icon: "trash-can"
-            pos_hint: {"top": 1, "right": .9}
+            pos_hint: {"top": 1, "right": .765}
             on_release: 
                 root._del()
                 app.remove_items()
@@ -192,7 +185,7 @@
         MDIconButton:
             # id:upd_button
             icon: "pencil"
-            pos_hint: {"top": 1, "right": 1}
+            pos_hint: {"top": 1, "right": .8}
             on_release:
                 root._upd()
                 app.root.upd_id = root.id
@@ -205,8 +198,8 @@
             text: root.text
             markup: True
             adaptive_size: True
-            height: self.texture_size[1] + 2*self.padding[1]
+            height: self.texture_size[1] + 15
             pos: "12dp", "12dp"
             #bold: True
 
-<MagicButton@MagicBehavior+MDRaisedButton>
+<MagicRisedButton@MagicBehavior+MDRaisedButton>
