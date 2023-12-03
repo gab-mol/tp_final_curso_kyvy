@@ -157,6 +157,7 @@
                 multiline: False
                 hint_text: "Título..."
                 text: root.upd_title
+                write_tab: False
             MDTextField:
                 id: upd_tex_field
                 size_hint: 1, .75
@@ -164,15 +165,27 @@
                 multiline: True
                 hint_text: "Re escriba su nota...."
                 text: root.upd_note
+                write_tab: False
 
 
 <Note>
-
+    # spacing: 10
     padding: 4
     size_hint: None, None
     width: app.root.width
-    height: cardlabel.height
+    height: cardlabel.height+5
+
     MDRelativeLayout:
+
+        MDLabel:
+            id: cardlabel
+            text: root.text
+            markup: True
+            adaptive_size: True
+            pos_hint: {"top": 1}
+            height: self.texture_size[1]
+            pos: "12dp", "12dp"
+
         MDIconButton:
             # id:del_button
             icon: "trash-can"
@@ -183,7 +196,6 @@
                 app.on_start()
 
         MDIconButton:
-            # id:upd_button
             icon: "pencil"
             pos_hint: {"top": 1, "right": .8}
             on_release:
@@ -192,14 +204,5 @@
                 app.root.load_old()
                 app.root.current="upd_note"
 
-
-        MDLabel:
-            id: cardlabel
-            text: root.text
-            markup: True
-            adaptive_size: True
-            height: self.texture_size[1] + 15
-            pos: "12dp", "12dp"
-            #bold: True
 
 <MagicRisedButton@MagicBehavior+MDRaisedButton>

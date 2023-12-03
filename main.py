@@ -46,10 +46,7 @@ class DbAdm:
         self.tb = NotesDb
 
     def alta(self, user:str, title:str, note:str, 
-            timestamp=dt.now()):
-        
-        # debido a límite de actualización de datetime.datetime.now()
-        t.sleep(1)
+            timestamp):
         
         # Crear nuevo registro en base de datos
         try:
@@ -111,9 +108,11 @@ class ScreenAdm(ScreenManager):
     def save_note(self):
         '''Guarda nueva nota.'''
         print("guardar:", self.name_str, self.titl_note, self.text_note)
-        
+        # debido a límite de actualización de datetime.datetime.now()
+        t.sleep(1)
         if self.titl_note and self.text_note:
             self.conn.alta(
+                timestamp=dt.now(),
                 user=self.name_str,
                 title=self.titl_note,
                 note=self.text_note
@@ -168,12 +167,7 @@ class NoteList(Screen): pass
 class WritNote(Screen): pass
 
 
-class UpdNote(Screen):
-    def set_toolbar_font_name(self, *args):
-        self.ids.toolbar.ids.label_title.font_name = "JetBrainsMono-ExtraBold-Italic.ttf"
-
-    def set_toolbar_font_size(self, *args):
-        self.ids.toolbar.ids.label_title.font_size = '50sp'
+class UpdNote(Screen): pass
 
 class MainApp(MDApp):
     title= "App anotador"
@@ -192,18 +186,22 @@ class MainApp(MDApp):
 
     def on_start(self):
         '''Cargar todas las notas.'''
-        print("\n\nlanzando on_start !!!!!\n\n")
+        print("\nCargando lista.\n")
+        
         for it in self.conn.read_all_items():
+            
+            # Formatear párrafo
             note_form = "\n".join(tw.wrap(it.note))
+            
+            # Creando vista de notas
             self.root.ids.md_list.add_widget(
                 Note(
                     id_card= it.timestamp,
-                    text=f"[b]{it.title}[/b] | Por: {it.user}, \
-{it.timestamp}\n {note_form}", 
+                    text=f"[size=20][b]{it.title}[/b] | Por: {it.user}, \
+{it.timestamp}[/size]\n{note_form}",
                     conn=self.conn
                 )
             )
-
 
 if __name__ == "__main__":
 
