@@ -49,6 +49,11 @@ class DbAdm:
             timestamp=dt.now()):
         t.sleep(1)
         try:
+            print("\n\n\nIntentando guardar:\n")
+            print(user, type(user)) 
+            print(title, type(title))
+            print(note, type(note)) 
+            print(timestamp, type(timestamp)) 
             self.tb.create(
                 timestamp = timestamp,
                 user = user,
@@ -94,12 +99,20 @@ class DbAdm:
 # Clases Kivy ###############################################################
 
 class ScreenAdm(ScreenManager):
-    id_pointer = StringProperty()
+   # id_pointer = StringProperty()
+    
+    upd_id = StringProperty()
+    
     name_str = StringProperty()
     titl_note = StringProperty()
     text_note = StringProperty()
     
-    upd_id = StringProperty()
+    upd_title = StringProperty()
+    upd_note = StringProperty()
+    
+
+    
+    
     def __init__(self, conn:DbAdm, **kwargs):
         super().__init__(**kwargs)
         self.conn= conn
@@ -108,20 +121,19 @@ class ScreenAdm(ScreenManager):
         print("guardar:", self.name_str, self.titl_note, self.text_note)
         
         self.conn.alta(
-            timestamp= self.id_pointer,
             user=self.name_str,
             title=self.titl_note,
             note=self.text_note
         )
         
-    def change_note(self, title,note):
-        timestamp=  dt.strptime(self.id_pointer,"%Y-%m-%d %H:%M:%S")
+    def change_note(self):
+        timestamp=  dt.strptime(self.upd_id,"%Y-%m-%d %H:%M:%S")
         print("RESULT",timestamp, type(timestamp))
         self.conn.update(
             user= self.name_str,
             time_id= timestamp,
-            title= title,
-            note= note
+            title= self.upd_title,
+            note= self.upd_note
         )
 
 
@@ -139,7 +151,7 @@ class Note(MDCard):
 
     def _upd(self):
         id_ts = str(self.id_card)
-        print("ESTO",self.id_card)
+        #print("ESTO",self.id_card)
         self.id = id_ts
 
 

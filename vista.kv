@@ -2,6 +2,9 @@
     name_str: name_field.text
     titl_note: titl_field.text
     text_note: tex_field.text
+    upd_title: upd_titl_field.text
+    upd_note: upd_tex_field.text
+
     Log:
         name: "Logging"
         MDBoxLayout:
@@ -115,9 +118,6 @@
                     size_hint: 1, 0.5
                     on_release:root.current= "Logging"
     UpdNote:
-        upd_title: titl_field.text
-        upd_note: tex_field.text
-
         name: "upd_note"
 
         MDBoxLayout:
@@ -129,26 +129,26 @@
                     size_hint: .33,1
                 MDLabel:
                     size_hint: .33,1
-                    text: root.id_pointer
+                    text: root.upd_id
                 MDRaisedButton:
                     text: "Guardar"
                     font_size: 15
                     size_hint: .33,1
-                    on_release:root.change_note(titl_field.text,tex_field.text)
+                    on_release:root.change_note()
 
             MDTextField:
-                id: titl_field
+                id: upd_titl_field
                 size_hint: 1, .25
                 font_size: 30
                 multiline: False
                 hint_text: "Título..."
                 text: root.titl_note
             MDTextField:
-                id: tex_field
+                id: upd_tex_field
                 size_hint: 1, .75
                 font_size: 20
                 multiline: True
-                hint_text: "Escriba su nota...."
+                hint_text: "Re escriba su nota...."
                 text: root.text_note 
 <Note>
 
@@ -172,7 +172,7 @@
             pos_hint: {"top": 1, "right": 1}
             on_release:
                 root._upd()
-                app.root.id_pointer = root.id
+                app.root.upd_id = root.id
                 app.root.current="upd_note"
 
 
