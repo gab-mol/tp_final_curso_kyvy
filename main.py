@@ -112,11 +112,14 @@ class ScreenAdm(ScreenManager):
         '''Guarda nueva nota.'''
         print("guardar:", self.name_str, self.titl_note, self.text_note)
         
-        self.conn.alta(
-            user=self.name_str,
-            title=self.titl_note,
-            note=self.text_note
-        )
+        if self.titl_note and self.text_note:
+            self.conn.alta(
+                user=self.name_str,
+                title=self.titl_note,
+                note=self.text_note
+            )
+        else:
+            print("Entrada nula")
     
     def load_old(self):
         '''Carga la nota a editar en campos'''
