@@ -142,14 +142,14 @@
                 font_size: 30
                 multiline: False
                 hint_text: "Título..."
-                text: root.titl_note
+                text: root.upd_title
             MDTextField:
                 id: upd_tex_field
                 size_hint: 1, .75
                 font_size: 20
                 multiline: True
                 hint_text: "Re escriba su nota...."
-                text: root.text_note 
+                text: root.upd_note 
 <Note>
 
     padding: 4
@@ -173,6 +173,7 @@
             on_release:
                 root._upd()
                 app.root.upd_id = root.id
+                app.root.load_old()
                 app.root.current="upd_note"
 
 

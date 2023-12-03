@@ -125,13 +125,21 @@ class ScreenAdm(ScreenManager):
             title=self.titl_note,
             note=self.text_note
         )
-        
+    
+    def load_old(self):
+        self.timestamp=  dt.strptime(self.upd_id,"%Y-%m-%d %H:%M:%S")
+        #cargar titulo y nota campos
+        to_upd= self.conn.read(self.timestamp)
+        self.upd_title= to_upd["title"]
+        self.upd_note= to_upd["note"]
+    
     def change_note(self):
-        timestamp=  dt.strptime(self.upd_id,"%Y-%m-%d %H:%M:%S")
-        print("RESULT",timestamp, type(timestamp))
+        # castear de nuevo a timestamp
+        #timestamp=  dt.strptime(self.upd_id,"%Y-%m-%d %H:%M:%S")
+        
         self.conn.update(
             user= self.name_str,
-            time_id= timestamp,
+            time_id= self.timestamp,
             title= self.upd_title,
             note= self.upd_note
         )
