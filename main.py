@@ -7,8 +7,11 @@ Config.set('graphics', 'height', '500')
 
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 from kivy.lang import Builder
 
 # Otras dependencias
@@ -109,21 +112,26 @@ class ScreenAdm(ScreenManager):
     def __init__(self, conn:DbAdm, **kwargs):
         super().__init__(**kwargs)
         self.conn= conn
+        self.app = MDApp.get_running_app()
 
     def save_note(self):
         '''Guarda nueva nota.'''
         print("guardar:", self.name_str, self.titl_note, self.text_note)
         # debido a límite de actualización de datetime.datetime.now()
         t.sleep(1)
-        if self.titl_note and self.text_note:
-            self.conn.alta(
-                timestamp=dt.now(),
-                user=self.name_str,
-                title=self.titl_note,
-                note=self.text_note
-            )
+        if len(self.titl_note) > 40:
+            self.app.show_adv("Título muy largo")
+            print("No se guarda.")
         else:
-            print("Entrada nula")
+            if self.titl_note and self.text_note:
+                self.conn.alta(
+                    timestamp=dt.now(),
+                    user=self.name_str,
+                    title=self.titl_note,
+                    note=self.text_note
+                )
+            else:
+                print("Entrada nula")
     
     def load_old(self):
         '''Carga la nota a editar en campos'''
@@ -174,10 +182,12 @@ class WritNote(Screen): pass
 
 class UpdNote(Screen): pass
 
+
+
 class MainApp(MDApp):
     title= "App anotador"
     conn = DbAdm()
-    
+    dialog = None
     def build(self):
         #Window.size = (1000,500)
         #Config.set('graphics','resizable', False) # NO FUNCIONA!
@@ -207,6 +217,29 @@ class MainApp(MDApp):
                     conn=self.conn
                 )
             )
+    
+    def show_adv(self, text):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                text=text,
+                buttons=[
+                    MDFlatButton(
+                        text="OK",
+                        theme_text_color="Custom",
+                        text_color=self.theme_cls.primary_color,
+                        on_press= self.dis_adv
+                    ),
+                ],
+            )
+        self.dialog.open()            
+            
+    def dis_adv(self, inst):
+        '''cerrar'''
+        if self.dialog:
+            self.dialog.dismiss()
+
+        
+
 
 if __name__ == "__main__":
 
