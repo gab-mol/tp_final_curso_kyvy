@@ -1,25 +1,23 @@
-from kivy.config import Config
-# from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
+from kivy.config import Config
 from kivy.lang import Builder
 from kivy.core.window import Window
-from kivymd.utils import asynckivy
-from kivymd.uix.refreshlayout import refreshlayout
 
 import os
 from peewee import SqliteDatabase, Model, TimestampField, CharField, TextField
 from datetime import datetime as dt
 import time as t
 import textwrap as tw
-import pandas as pd
 
 # Cargar Vista
 Builder.load_file("vista.kv")
 
 # Base de datos (SQLite, ORM: peewee) ######################################
+
+# Creación de Base y tabla, conexión
 RUTA_DIR = os.getcwd()
 DB_P = "user_notes.db"
 db = SqliteDatabase(DB_P)
@@ -40,20 +38,20 @@ try:
 except:
     raise Exception("\nError de conexión con base SQLite\n")
 
+# Lógica del CRUD
 class DbAdm:
-    
+    '''Métodos de interacción con base de datos'''
     def __init__(self):
         self.tb = NotesDb
 
     def alta(self, user:str, title:str, note:str, 
             timestamp=dt.now()):
+        
+        # debido a límite de actualización de datetime.datetime.now()
         t.sleep(1)
+        
+        # Crear nuevo registro en base de datos
         try:
-            print("\n\n\nIntentando guardar:\n")
-            print(user, type(user)) 
-            print(title, type(title))
-            print(note, type(note)) 
-            print(timestamp, type(timestamp)) 
             self.tb.create(
                 timestamp = timestamp,
                 user = user,
@@ -65,11 +63,13 @@ class DbAdm:
             raise Exception("ERROR al guardar nota")
         
     def delete(self,time_id):
+        '''Borra registro.'''
         print("borrar nota del:",time_id)
         rm=self.tb.get(self.tb.timestamp == time_id)
         rm.delete_instance()
         
     def update(self,user, time_id, title, note):
+        '''Cambia registro.'''
         print("cambiar esto:",time_id)
         upd=self.tb.update(
             user = user,
@@ -77,16 +77,12 @@ class DbAdm:
             note = note
         ).where(self.tb.timestamp == time_id)
         upd.execute()
-            
+        
     def read_all_items(self):
         return self.tb.select()
 
-    def read_all(self):
-        for fila in self.tb.select():
-            print(fila.timestamp,fila.user,fila.title)
-            print(int(round(fila.timestamp.timestamp())))
-
     def read(self, timestamp:int):
+        '''Lee registro.'''
         item = self.tb.get(self.tb.timestamp==timestamp)
         response = {
             "user": item.user, 
@@ -110,14 +106,12 @@ class ScreenAdm(ScreenManager):
     upd_title = StringProperty()
     upd_note = StringProperty()
     
-
-    
-    
     def __init__(self, conn:DbAdm, **kwargs):
         super().__init__(**kwargs)
         self.conn= conn
 
     def save_note(self):
+        '''Guarda nueva nota.'''
         print("guardar:", self.name_str, self.titl_note, self.text_note)
         
         self.conn.alta(
@@ -127,16 +121,18 @@ class ScreenAdm(ScreenManager):
         )
     
     def load_old(self):
+        '''Carga la nota a editar en campos'''
+        
+        # castear de nuevo a timestamp
         self.timestamp=  dt.strptime(self.upd_id,"%Y-%m-%d %H:%M:%S")
+        
         #cargar titulo y nota campos
         to_upd= self.conn.read(self.timestamp)
         self.upd_title= to_upd["title"]
         self.upd_note= to_upd["note"]
     
     def change_note(self):
-        # castear de nuevo a timestamp
-        #timestamp=  dt.strptime(self.upd_id,"%Y-%m-%d %H:%M:%S")
-        
+        '''Ejecutar actualización de nota.'''
         self.conn.update(
             user= self.name_str,
             time_id= self.timestamp,
@@ -159,7 +155,6 @@ class Note(MDCard):
 
     def _upd(self):
         id_ts = str(self.id_card)
-        #print("ESTO",self.id_card)
         self.id = id_ts
 
 
@@ -172,11 +167,11 @@ class NoteList(Screen): pass
 class WritNote(Screen): pass
 
 
-class UpdNote(Screen):
-    upd_title = StringProperty()
-    upd_note = StringProperty()
-    def __init__(self, **kw):
-        super().__init__(**kw)
+class UpdNote(Screen): pass
+    # upd_title = StringProperty()
+    # upd_note = StringProperty()
+    # def __init__(self, **kw):
+    #     super().__init__(**kw)
 
 
 class MainApp(MDApp):
