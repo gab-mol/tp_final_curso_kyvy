@@ -31,13 +31,26 @@
                 font_size: 25
                 pos_hint:{"center_x":.5, "center_y":.5}
                 size_hint:.5, .275
-                on_release: root.name_len("write")
+                on_release:
+                    root.transition = RiseInTransition()
+                    root.name_len("write")
             MDRaisedButton:
                 text:"Ver notas guardadas"
                 font_size: 25
                 size_hint:.5, .275
                 pos_hint:{"center_x":.5, "center_y":.5}
-                on_release: root.name_len("Notas")
+                on_release:
+                    root.transition = RiseInTransition()
+                    root.name_len("Notas")
+            MagicRisedButton:
+                text: "Cambiar tema"
+                font_size: 25
+                size_hint:.5, .275
+                pos_hint:{"center_x":.5, "center_y":.5}
+                on_release:
+                    self.shake()
+                    app.change_theme()
+
 
     NoteList:
         name: "Notas"
