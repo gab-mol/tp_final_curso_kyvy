@@ -116,21 +116,33 @@ class ScreenAdm(ScreenManager):
 
     def save_note(self):
         '''Guarda nueva nota.'''
-        print("guardar:", self.name_str, self.titl_note, self.text_note)
-        # debido a límite de actualización de datetime.datetime.now()
+        # Tiempo de espera debido a límite de 
+        # actualización de datetime.datetime.now() :
         t.sleep(1)
+
+        print("CAMPOS:", self.name_str, 
+            self.titl_note, self.text_note)
+
+        # Límite de caracteres para el título
         if len(self.titl_note) > 40:
-            self.app.show_adv("Título muy largo")
+            self.app.show_adv("¡Título muy largo!")
             print("No se guarda.")
         else:
+        # Evitar error por valores nulos
             if self.titl_note and self.text_note:
+                
+                print("Guardarndo:", self.name_str, 
+                self.titl_note, self.text_note)
+
                 self.conn.alta(
                     timestamp=dt.now(),
                     user=self.name_str,
                     title=self.titl_note,
                     note=self.text_note
                 )
+
             else:
+                self.app.show_adv("Campo(s) vacío(s).")
                 print("Entrada nula")
     
     def load_old(self):
@@ -153,6 +165,12 @@ class ScreenAdm(ScreenManager):
             note= self.upd_note
         )
 
+    def name_len(self, screen:str):
+        '''Límite de caracteres para el nombre'''
+        if len(self.name_str) > 30:
+            self.app.show_adv("¡Nombre muy largo!\n")
+        else:
+            self.current=screen
 
 class Note(MDCard):
     text = StringProperty()
@@ -188,19 +206,19 @@ class MainApp(MDApp):
     title= "App anotador"
     conn = DbAdm()
     dialog = None
+
     def build(self):
-        #Window.size = (1000,500)
-        #Config.set('graphics','resizable', False) # NO FUNCIONA!
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Red"
 
         return ScreenAdm(self.conn)
     
     def remove_items(self):
+        '''Limpiar lista de notas.'''
         self.root.ids.md_list.clear_widgets() 
 
     def on_start(self):
-        '''Cargar todas las notas.'''
+        '''Cargar todas las notas desde base de datos.'''
         print("\nCargando lista.\n")
         
         for it in self.conn.read_all_items():
@@ -218,7 +236,9 @@ class MainApp(MDApp):
                 )
             )
     
+    # Lanzar advertencia
     def show_adv(self, text):
+        '''Lanzar aviso emergente.'''
         if not self.dialog:
             self.dialog = MDDialog(
                 text=text,
@@ -231,12 +251,14 @@ class MainApp(MDApp):
                     ),
                 ],
             )
+        self.dialog.text = text
         self.dialog.open()            
-            
+        
+    # Cerrar advertencia
     def dis_adv(self, inst):
-        '''cerrar'''
+        '''Cerrar aviso emergente'''
         if self.dialog:
-            self.dialog.dismiss()
+            self.dialog.dismiss(force=True) 
 
         
 
