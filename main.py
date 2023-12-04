@@ -7,7 +7,7 @@ Config.set('graphics', 'height', '500')
 
 from kivymd.app import MDApp
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivymd.uix.boxlayout import MDBoxLayout
+#from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
 from kivymd.uix.card import MDCard
 from kivymd.uix.button import MDFlatButton
@@ -212,15 +212,20 @@ class WritNote(Screen): pass
 class UpdNote(Screen): pass
 
 
-
 class MainApp(MDApp):
     title= "App anotador"
     conn = DbAdm()
     dialog = None
-
+    i = 0
+    colors = ['Pink', 'Purple', 
+            'DeepPurple', 'Indigo', 'Blue', 
+            'LightBlue', 'Cyan', 'Teal', 'Green', 'LightGreen', 
+            'Lime', 'Yellow', 'Amber', 'Orange', 'DeepOrange', 
+            'Brown', 'Gray', 'BlueGray', 'Red']
+    
     def build(self):
         self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Red"
+        #self.theme_cls.primary_palette = "Red"
 
         return ScreenAdm(self.conn)
     
@@ -247,6 +252,20 @@ class MainApp(MDApp):
                 )
             )
     
+    def change_theme(self):
+        '''Cambia `self.theme_cls.primary_palette` '''
+        if self.i > (len(self.colors)-1):
+            self.i = 0
+        print("Cambiar paleta a", self.colors[self.i])
+        self.theme_cls.primary_palette = self.colors[self.i]
+        print(self.theme_cls.primary_palette)
+        self.i +=1
+
+        self.build()
+
+
+
+
     # Lanzar advertencia
     def show_adv(self, text):
         '''Lanzar aviso emergente.'''
@@ -272,7 +291,6 @@ class MainApp(MDApp):
             self.dialog.dismiss(force=True) 
 
         
-
 
 if __name__ == "__main__":
 
