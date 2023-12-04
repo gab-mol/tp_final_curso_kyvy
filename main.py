@@ -124,7 +124,7 @@ class ScreenAdm(ScreenManager):
             self.titl_note, self.text_note)
 
         # Límite de caracteres para el título
-        if len(self.titl_note) > 60:
+        if len(self.titl_note) > 20:
             self.app.show_adv("¡Título muy largo!")
             print("No se guarda.")
         else:
@@ -158,7 +158,7 @@ class ScreenAdm(ScreenManager):
     
     def change_note(self):
         '''Ejecutar actualización de nota.'''
-        if len(self.upd_title) > 40:
+        if len(self.upd_title) > 30:
             self.app.show_adv("¡Título muy largo!")
             print("No se guarda.")
         else:
@@ -178,7 +178,7 @@ class ScreenAdm(ScreenManager):
 
     def name_len(self, screen:str):
         '''Límite de caracteres para el nombre'''
-        if len(self.name_str) > 30:
+        if len(self.name_str) > 25:
             self.app.show_adv("¡Nombre muy largo!\n")
         else:
             self.current=screen
