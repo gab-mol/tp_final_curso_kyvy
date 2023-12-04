@@ -124,7 +124,7 @@ class ScreenAdm(ScreenManager):
             self.titl_note, self.text_note)
 
         # Límite de caracteres para el título
-        if len(self.titl_note) > 40:
+        if len(self.titl_note) > 60:
             self.app.show_adv("¡Título muy largo!")
             print("No se guarda.")
         else:
@@ -169,6 +169,8 @@ class ScreenAdm(ScreenManager):
                     title= self.upd_title,
                     note= self.upd_note
                 )
+                self.app.remove_items()
+                self.app.on_start() 
                 self.current="Notas"
             else:
                 self.app.show_adv("Campo(s) vacío(s).")
