@@ -158,12 +158,21 @@ class ScreenAdm(ScreenManager):
     
     def change_note(self):
         '''Ejecutar actualización de nota.'''
-        self.conn.update(
-            user= self.name_str,
-            time_id= self.timestamp,
-            title= self.upd_title,
-            note= self.upd_note
-        )
+        if len(self.upd_title) > 40:
+            self.app.show_adv("¡Título muy largo!")
+            print("No se guarda.")
+        else:
+            if self.upd_title and self.upd_note:
+                self.conn.update(
+                    user= self.name_str,
+                    time_id= self.timestamp,
+                    title= self.upd_title,
+                    note= self.upd_note
+                )
+                self.current="Notas"
+            else:
+                self.app.show_adv("Campo(s) vacío(s).")
+                print("Entrada nula")
 
     def name_len(self, screen:str):
         '''Límite de caracteres para el nombre'''
